@@ -1,10 +1,5 @@
 let n, m, p, q, a, b, c, d, t, der;
 let questionFunction, questionFunctionLatex, derInt;
-function displayLatex() {
-    const latex = document.getElementById('latex').value;
-    document.getElementById('result').innerText = `\\(${latex}\\)`;
-    MathJax.typeset();
-}
 function makeQuestionIntegral() {
     document.getElementById('inCorrect').innerText = '';
     document.getElementById('wrongAnswerExplanation').innerText = '';
@@ -75,8 +70,8 @@ function makeQuestionIntegral() {
     document.getElementById('question1').innerText = `What is the integral of \\(${questionFunctionLatex}\\)?`;
     MathJax.typeset();
 }
-function checkAnswerIntegral() {
-    if (checkEquality(document.getElementById('answer1').value)) {
+function checkAnswerIntegral(answer1) {
+    if (checkEquality(answer1)) {
         document.getElementById('inCorrect').innerText = 'Correct!';
         document.getElementById('wrongAnswerExplanation').innerText = '';
         return;
@@ -232,8 +227,8 @@ function makeQuestionDerivative() {
     document.getElementById('question').innerText = `What is the derivative of \\(${questionFunctionLatex}\\)?`;
     MathJax.typeset();
 }
-function checkAnswerDerivative() {
-    if (checkEquality(document.getElementById('answer').value)) {
+function checkAnswerDerivative(answer) {
+    if (checkEquality(answer)) {
         document.getElementById('inCorrect').innerText = 'Correct!';
         document.getElementById('wrongAnswerExplanation').innerText = '';
         return;
