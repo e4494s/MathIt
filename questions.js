@@ -1,17 +1,63 @@
 let n, m, p, q, a, b, c, d, t, der;
-let questionFunction, questionFunctionLatex, derivative;
+let questionFunction, questionFunctionLatex, derInt;
 function displayLatex() {
     const latex = document.getElementById('latex').value;
     document.getElementById('result').innerText = `\\(${latex}\\)`;
     MathJax.typeset();
 }
+function makeQuestionIntegral() {
+    document.getElementById('inCorrect').innerText = '';
+    document.getElementById('wrongAnswerExplanation').innerText = '';
+    der = 1;//Math.floor(Math.random() * 2) + 1;
+    if (der === 1) {
+        n = Math.floor(Math.random() * 20) + 2;
+        m = n - 1;
+        p = Math.floor(Math.random() * 5) + 1;
+        q = Math.floor(Math.random() * 2) + 2;
+        if (p % q === 0) {
+            p++;
+        }
+        a = Math.floor(Math.random() * 19) + 2;
+        b = Math.floor(Math.random() * 19) + 2;
+        c = Math.floor(Math.random() * 19) + 2;
+        questionFunction = `x^(${p}/${q})+${a}x^${n}+${b}x^${m}+${c}`;
+        derInt = nerdamer(`integrate(${questionFunction}, x)`).toString();
+        derInt += '+C';
+        questionFunctionLatex = `x^{${p}/${q}}+${a}x^{${n}}+${b}x^{${m}}+${c}`;
+        console.log(derInt);
+    }
+
+    document.getElementById('question1').innerText = `What is the integral of \\(${questionFunctionLatex}\\)?`;
+    MathJax.typeset();
+}
+function checkAnswerIntegral() {
+    if (checkEquality(document.getElementById('answer1').value)) {
+        document.getElementById('inCorrect').innerText = 'Correct!';
+        document.getElementById('wrongAnswerExplanation').innerText = '';
+        return;
+    }
+
+    document.getElementById('inCorrect').innerText = "You got the answer incorrect. Here is the correct answer: ";
+    if (der === 1){
+        document.getElementById('wrongAnswerExplanation').innerText =`The power rule for integration states: \n
+                                                                        \\(\\int x^n dx = \\frac{x^{n+1}}{n+1} + C\\)\n
+                                                                        \\(\\int ${questionFunctionLatex} dx = \\frac{x^{(${p}/${q})+1}}{(${p}/${q})+1}+${a}\\left(\\frac{x^{${n}+1}}{${n}+1}\\right)+${b}\\left(\\frac{x^{${m}+1}}{${m}+1}\\right)+${c}\\left(\\frac{x^{0+1}}{0+1}\\right)+C\\)\n
+                                                                        \\(= \\frac{x^{${p+q}/${q}}}{${p+q}/${q}}+${a}\\left(\\frac{x^{${n+1}}}{${n+1}}\\right)+${b}\\left(\\frac{x^{${m+1}}}{${m+1}}\\right)+${c}\\left(\\frac{x^{1}}{1}\\right)+C\\)\n
+                                                                        \\(= \\frac{${q}}{${p+q}}x^{${p+q}/${q}}+\\frac{${a}}{${n+1}}x^{${n+1}}+\\frac{${b}}{${m+1}}x^{${m+1}}+${c}x+C\\)\n
+                                                                    So, \\(\\int ${questionFunctionLatex} dx = \\frac{${q}}{${p+q}}x^{${p+q}/${q}}+\\frac{${a}}{${n+1}}x^{${n+1}}+\\frac{${b}}{${m+1}}x^{${m+1}}+${c}x+C\\)\n`; 
+    }
+
+    MathJax.typeset();
+
+}
 function makeQuestionDerivative() {
+    document.getElementById('inCorrect').innerText = '';
     document.getElementById('wrongAnswerExplanation').innerText = '';
     der = Math.floor(Math.random() * 6) + 1;
     if (der === 1) {
         n = Math.floor(Math.random() * 100) + 1;
         questionFunction = `x^${n}`; // Nerdamer-compatible string
-        derivative = nerdamer(`diff(${questionFunction}, x)`).toString(); // Calculate derivative
+        derInt = nerdamer(`diff(${questionFunction}, x)`).toString(); // Calculate derivative
 
         // Convert to LaTeX for display
         questionFunctionLatex = `x^{${n}}`;
@@ -29,8 +75,8 @@ function makeQuestionDerivative() {
         c = Math.floor(Math.random() * 19) + 2;
         
         questionFunction = `(${a}x^${n}+${b}x^${m}+${c})/(x^(${p}/${q}))`;
-        derivative = nerdamer(`diff(${questionFunction}, x)`).toString();
-        // console.log(derivative);
+        derInt = nerdamer(`diff(${questionFunction}, x)`).toString();
+        // console.log(derInt);
 
         questionFunctionLatex = `\\frac{${a}x^{${n}}+${b}x^{${m}}+${c}}{x^{${p}/${q}}}`;
     }
@@ -38,38 +84,38 @@ function makeQuestionDerivative() {
         t = Math.floor(Math.random() * 6) + 1;
         if (t === 1) {
             questionFunction = 'sin(x)';
-            derivative = nerdamer(`diff(${questionFunction}, x)`).toString();
+            derInt = nerdamer(`diff(${questionFunction}, x)`).toString();
             questionFunctionLatex = `\\sin(x)`;
         }
         else if (t === 2) {
             questionFunction = 'cos(x)';
-            derivative = nerdamer(`diff(${questionFunction}, x)`).toString();
+            derInt = nerdamer(`diff(${questionFunction}, x)`).toString();
             questionFunctionLatex = `\\cos(x)`;
         }
         else if (t === 3) {
             questionFunction = 'tan(x)';
-            derivative = nerdamer(`diff(${questionFunction}, x)`).toString();
+            derInt = nerdamer(`diff(${questionFunction}, x)`).toString();
             questionFunctionLatex = `\\tan(x)`;
         }
         else if (t === 4) {
             questionFunction = 'sec(x)';
-            derivative = nerdamer(`diff(${questionFunction}, x)`).toString();
+            derInt = nerdamer(`diff(${questionFunction}, x)`).toString();
             questionFunctionLatex = `\\sec(x)`;
         }
         else if (t === 5) {
             questionFunction = 'csc(x)';
-            derivative = nerdamer(`diff(${questionFunction}, x)`).toString();
+            derInt = nerdamer(`diff(${questionFunction}, x)`).toString();
             questionFunctionLatex = `\\csc(x)`;
         }
         else if (t === 6) {
             questionFunction = 'cot(x)';
-            derivative = nerdamer(`diff(${questionFunction}, x)`).toString();
+            derInt = nerdamer(`diff(${questionFunction}, x)`).toString();
             questionFunctionLatex = `\\cot(x)`;
         }
     }
     else if (der === 4) {
         questionFunction = '(e^x)sec(x)';
-        derivative = nerdamer(`diff(${questionFunction}, x)`).toString();
+        derInt = nerdamer(`diff(${questionFunction}, x)`).toString();
         questionFunctionLatex = `e^x\\sec(x)`;
     }
     else if (der === 5) {
@@ -79,16 +125,16 @@ function makeQuestionDerivative() {
         b = Math.floor(Math.random() * 19) + 2;
         c = Math.floor(Math.random() * 19) + 2;
         questionFunction = `(x^${n}+${a}x^${m}+${b})/(x^${n}+${c})`;
-        derivative = nerdamer(`diff(${questionFunction}, x)`).toString();
+        derInt = nerdamer(`diff(${questionFunction}, x)`).toString();
         questionFunctionLatex = `\\frac{x^{${n}}+${a}x^{${m}}+${b}}{x^{${n}}+${c}}`;
-        // console.log(derivative);
+        // console.log(derInt);
     }
     else if (der === 6) {
         n = Math.floor(Math.random() * 20) + 2;
         questionFunction = `asin(x^${n})`;
-        derivative = nerdamer(`diff(${questionFunction}, x)`).toString();
+        derInt = nerdamer(`diff(${questionFunction}, x)`).toString();
         questionFunctionLatex = `\\arcsin(x^{${n}})`;
-        // console.log(derivative);
+        // console.log(derInt);
     }
 
 
@@ -96,12 +142,14 @@ function makeQuestionDerivative() {
     document.getElementById('question').innerText = `What is the derivative of \\(${questionFunctionLatex}\\)?`;
     MathJax.typeset();
 }
-function checkAnswer() {
+function checkAnswerDerivative() {
     if (checkEquality(document.getElementById('answer').value)) {
-        document.getElementById('wrongAnswerExplanation').innerText = 'Correct!';
+        document.getElementById('inCorrect').innerText = 'Correct!';
+        document.getElementById('wrongAnswerExplanation').innerText = '';
         return;
     }
 
+    document.getElementById('inCorrect').innerText = "You got the answer incorrect. Here is the correct answer: ";
     if (der === 1){
         document.getElementById('wrongAnswerExplanation').innerText =`The power rule states that if \\(n\\) is a rational number, then the function \\(f(x) = x^n\\) is differentiable and\n
                                                         \\(\\frac{d}{dx}(x^n) = nx^{n-1}\\)\n
@@ -168,7 +216,7 @@ function checkAnswer() {
 }
 function checkEquality(userAnswer) {
     try {
-        const isEqual = nerdamer(derivative).eq(userAnswer);
+        const isEqual = nerdamer(derInt).eq(userAnswer);
         return isEqual;
     } catch (error) {
         console.error(error);
