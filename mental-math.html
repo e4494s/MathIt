@@ -5,12 +5,21 @@
   <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
   <title>Math-It ~ Mental Math</title>
   <link rel = "stylesheet" type = "text/css" href = "css/main.css">
+  <style>
+    td {
+      padding: 10px 5px 10px 5px;
+    }
+    
+    td.pad {
+      padding: 25px;
+    }
+  </style>
 </head>
-<body>
+<body onload = "init()">
 
 <header>
   <h1>+&nbsp;&nbsp;&nbsp;Math-It&nbsp;&nbsp;&nbsp;+</h1>
-  <h2><span class = "big">{</span> Math Practice Engine <span class = "big">}</span></h2>
+  <h2><span class = "brace">{</span> Math Practice Engine <span class = "brace">}</span></h2>
 </header>
 
 <nav>
@@ -23,19 +32,204 @@
 
 <section>
   <h2>Mental Math Practice</h2>
-  <p>Practice times tables, prime number recognition, and other quick math skills on the spot with an infinite stream of random questions!</p>
+  <p>Practice times tables, modular arithmetic, exponents, prime number recognition, and other quick math skills on the spot with an infinite stream of random questions!</p>
   <p>You can customize the types of problems you get and how difficult they are to tailor your practice to your specific needs.</p>
 </section>
 
 <section>
   <h3>Question Types:</h3>
+  <table>
+    <tbody>
+      <tr>
+        <td>
+          <input type = "checkbox" id = "sum-check" CHECKED>
+        </td>
+        <td>
+          <label for = "sum-check" class = "check-label">Sums and Differences</label>
+          
+          <br>
+          
+          <div>Difficulty: <i><span id = "sum-diff-txt">100</span>%</i></div>
+          <input type = "range" min = "0" max = "10" step = "1" value = "0" id = "sum-diff-range" oninput = "updateDifficulties()">
+        </td>
+        
+        <td class = "pad"></td>
+        
+        <td>
+          <input type = "checkbox" id = "prod-check" CHECKED>
+        </td>
+        <td>
+          <label for = "prod-check" class = "check-label">Multiplication</label>
+          
+          <br>
+          
+          <div>Difficulty: <i><span id = "prod-diff-txt">100</span>%</i></div>
+          <input type = "range" min = "0" max = "10" step = "1" value = "0" id = "prod-diff-range" oninput = "updateDifficulties()">
+        </td>
+        
+        <td class = "pad"></td>
+        
+        <td>
+          <input type = "checkbox" id = "reduc-frac-check" CHECKED>
+        </td>
+        <td>
+          <label for = "reduc-frac-check" class = "check-label">Division</label>
+          
+          <br>
+          
+          <div>Difficulty: <i><span id = "reduc-frac-diff-txt">100</span>%</i></div>
+          <input type = "range" min = "0" max = "10" step = "1" value = "0" id = "reduc-frac-diff-range" oninput = "updateDifficulties()">
+        </td>
+      </tr>
+      
+      <tr>
+        <td>
+          <input type = "checkbox" id = "power-check" CHECKED>
+        </td>
+        <td>
+          <label for = "power-check" class = "check-label">Exponents</label>
+          
+          <br>
+          
+          <div>Difficulty: <i><span id = "power-diff-txt">100</span>%</i></div>
+          <input type = "range" min = "0" max = "10" step = "1" value = "0" id = "power-diff-range" oninput = "updateDifficulties()">
+        </td>
+        
+        <td class = "pad"></td>
+        
+        <td>
+          <input type = "checkbox" id = "mod-check" CHECKED>
+        </td>
+        <td>
+          <label for = "mod-check" class = "check-label">Modular Arithmetic</label>
+          
+          <br>
+          
+          <div>Difficulty: <i><span id = "mod-diff-txt">100</span>%</i></div>
+          <input type = "range" min = "0" max = "10" step = "1" value = "0" id = "mod-diff-range" oninput = "updateDifficulties()">
+        </td>
+        
+        <td class = "pad"></td>
+        
+        <td>
+          <input type = "checkbox" id = "prime-check" CHECKED>
+        </td>
+        <td>
+          <label for = "prime-check" class = "check-label">Identify Prime Numbers</label>
+          
+          <br>
+          
+          <div>Difficulty: <i><span id = "prime-diff-txt">100</span>%</i></div>
+          <input type = "range" min = "0" max = "10" step = "1" value = "0" id = "prime-diff-range" oninput = "updateDifficulties()">
+        </td>
+      </tr>
+      
+      <tr>
+        <td colspan = "8">
+          <div class = "center">
+            <button onclick = "goToLink()">Go!</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </section>
 
-<section>
-  <div class = "center">
-    <a href = "mental-math-go.html" class = "btn">Go!</a>
-  </div>
-</section>
+<script>
+  let sumDiff = 1;
+  let sumCheck = document.getElementById("sum-check");
+  let sumDiffTxt = document.getElementById("sum-diff-txt");
+  let sumDiffRange = document.getElementById("sum-diff-range");
+  
+  let prodDiff = 1;
+  let prodCheck = document.getElementById("prod-check");
+  let prodDiffTxt = document.getElementById("prod-diff-txt");
+  let prodDiffRange = document.getElementById("prod-diff-range");
+  
+  let powerDiff = 1;
+  let powerCheck = document.getElementById("power-check");
+  let powerDiffTxt = document.getElementById("power-diff-txt");
+  let powerDiffRange = document.getElementById("power-diff-range");
+  
+  let reducFracDiff = 1;
+  let reducFracCheck = document.getElementById("reduc-frac-check");
+  let reducFracDiffTxt = document.getElementById("reduc-frac-diff-txt");
+  let reducFracDiffRange = document.getElementById("reduc-frac-diff-range");
+  
+  let primeDiff = 1;
+  let primeCheck = document.getElementById("prime-check");
+  let primeDiffTxt = document.getElementById("prime-diff-txt");
+  let primeDiffRange = document.getElementById("prime-diff-range");
+  
+  let modDiff = 1;
+  let modCheck = document.getElementById("mod-check");
+  let modDiffTxt = document.getElementById("mod-diff-txt");
+  let modDiffRange = document.getElementById("mod-diff-range");
+  
+  
+  
+  function updateDifficulties() {
+    sumDiff = difficultyRangeArray[Number(sumDiffRange.value)] / 100;
+    sumDiffTxt.innerHTML = difficultyRangeArray[Number(sumDiffRange.value)];
+    
+    prodDiff = difficultyRangeArray[Number(prodDiffRange.value)] / 100;
+    prodDiffTxt.innerHTML = difficultyRangeArray[Number(prodDiffRange.value)];
+    
+    powerDiff = difficultyRangeArray[Number(powerDiffRange.value)] / 100;
+    powerDiffTxt.innerHTML = difficultyRangeArray[Number(powerDiffRange.value)];
+    
+    reducFracDiff = difficultyRangeArray[Number(reducFracDiffRange.value)] / 100;
+    reducFracDiffTxt.innerHTML = difficultyRangeArray[Number(reducFracDiffRange.value)];
+    
+    primeDiff = difficultyRangeArray[Number(primeDiffRange.value)] / 100;
+    primeDiffTxt.innerHTML = difficultyRangeArray[Number(primeDiffRange.value)];
+    
+    modDiff = difficultyRangeArray[Number(modDiffRange.value)] / 100;
+    modDiffTxt.innerHTML = difficultyRangeArray[Number(modDiffRange.value)];
+  }
+  
+  
+  
+  let difficultyRangeArray = [0, 10, 25, 50, 75, 100, 110, 120, 130, 140, 150, 180, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1500, 1800, 2000];
+  
+  function init() {
+    let ranges = [sumDiffRange, prodDiffRange, powerDiffRange, reducFracDiffRange, primeDiffRange, modDiffRange];
+    
+    for (let i = 0; i < ranges.length; i++) {
+      let range = ranges[i];
+      range.max = difficultyRangeArray.length - 1;
+      range.value = difficultyRangeArray.indexOf(100);
+    }
+  }
+  
+  
+  
+  function goToLink() {
+    let URL = "mental-math-go.html?";
+    
+    let checks = [
+      {checked: sumCheck.checked, diff: sumDiff, name: "SUM"},
+      {checked: prodCheck.checked, diff: prodDiff, name: "PROD"},
+      {checked: primeCheck.checked, diff: primeDiff, name: "PRIME"},
+      {checked: powerCheck.checked, diff: powerDiff, name: "POWER"},
+      {checked: reducFracCheck.checked, diff: reducFracDiff, name: "REDUC_FRAC"},
+      {checked: modCheck.checked, diff: modDiff, name: "MOD"}
+    ];
+    
+    for (let i = 0; i < checks.length; i++) {
+      let check = checks[i];
+      if (check.checked) {
+        URL += check.name + ":" + check.diff + ",";
+      }
+    }
+    
+    let a = document.createElement("a");
+    a.target = "_blank";
+    a.href = URL;
+    
+    a.click();
+  }
+</script>
 
 </body>
 </html>
