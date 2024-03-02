@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+  <meta charset = "UTF-8">
+  <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+  <title>Math-It ~ Calculus</title>
+  <link rel = "stylesheet" type = "text/css" href = "css/main.css">
+  <link rel = "icon" href = "images/favicon.png" type = "image/png">
+  <style>
+    td {
+      padding: 10px 5px 10px 5px;
+    }
+    
+    td.pad {
+      padding: 25px;
+    }
+  </style>
+</head>
+<body onload = "init()">
+
+<header>
+  <h1>+&nbsp;&nbsp;&nbsp;Math-It&nbsp;&nbsp;&nbsp;+</h1>
+  <img src = "images/logo.png" id = "logo">
+  <h2><span class = "brace">{</span> Math Practice Engine <span class = "brace">}</span></h2>
+</header>
+
+<nav>
+  <a href = "index.html">Home</a>
+  <a href = "mental-math.html">Mental Math</a>
+  <a href = "calculus.html">Calculus</a>
+  <a href = "#">Linear Algebra</a>
+  <a href = "#">Statistics</a>
+</nav>
+
+<section>
+  <h2>Calculus Practice</h2>
+  <p>Practice derivatives, integrals, algebra, and other vital calculus skills on the spot with an infinite stream of random questions!</p>
+  <p>You can customize the types of problems you get to tailor to your specific needs and only study the stuff you need the most practice on.</p>
+</section>
+
+<section>
+  <table style = "margin: auto;">
+    <tbody>
+      <tr>
+        <td colspan = "8">
+          <h3 style = "text-align: center;">Question Types:</h3>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type = "checkbox" id = "power-check" CHECKED>
+        </td>
+        <td>
+          <label for = "power-check" class = "check-label">Power Rule</label>
+        </td>
+        
+        <td class = "pad"></td>
+        
+        <td>
+          <input type = "checkbox" id = "product-check" CHECKED>
+        </td>
+        <td>
+          <label for = "product-check" class = "check-label">Product Rule</label>
+        </td>
+        
+        <td class = "pad"></td>
+        
+        <td>
+          <input type = "checkbox" id = "quotient-check" CHECKED>
+        </td>
+        <td>
+          <label for = "quotient-check" class = "check-label">Quotient Rule</label>
+        </td>
+      </tr>
+      
+      <tr>
+        <td>
+          <input type = "checkbox" id = "chain-check" CHECKED>
+        </td>
+        <td>
+          <label for = "chain-check" class = "check-label">Chain Rule</label>
+        </td>
+        
+        <td class = "pad"></td>
+        
+        <td>
+          <input type = "checkbox" id = "trig-check" CHECKED>
+        </td>
+        <td>
+          <label for = "trig-check" class = "check-label">Trig Functions</label>
+        </td>
+        
+        <td class = "pad"></td>
+        
+        <td>
+          <input type = "checkbox" id = "int-check" CHECKED>
+        </td>
+        
+        <td>
+          <label for = "int-check" class = "check-label">Integrals</label>
+        </td>
+      </tr>
+      
+      <tr>
+        <td colspan = "8">
+          <div class = "center">
+            <button onclick = "goToLink()">Go!</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<script>
+  let powerCheck = document.getElementById("power-check");
+  let productCheck = document.getElementById("product-check");
+  let quotientCheck = document.getElementById("quotient-check");
+  let chainCheck = document.getElementById("chain-check");
+  let trigCheck = document.getElementById("trig-check");
+  let intCheck = document.getElementById("int-check");
+  
+  
+  
+  function goToLink() {
+    let URL = "calculus-go.html?";
+    
+    let checks = [
+      {checked: powerCheck.checked, name: "POWER"},
+      {checked: productCheck.checked, name: "PRODUCT"},
+      {checked: quotientCheck.checked, name: "QUOTIENT"},
+      {checked: chainCheck.checked, name: "CHAIN"},
+      {checked: trigCheck.checked, name: "TRIG"},
+      {checked: intCheck.checked, name: "INT"}
+    ];
+    
+    for (let i = 0; i < checks.length; i++) {
+      let check = checks[i];
+      if (check.checked) {
+        URL += check.name + ",";
+      }
+    }
+    
+    let a = document.createElement("a");
+    a.target = "_blank";
+    a.href = URL;
+    
+    a.click();
+  }
+</script>
+
+</body>
+</html>
