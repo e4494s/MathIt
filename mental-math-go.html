@@ -301,6 +301,7 @@
     typeStrings["PRIME"] = TYPE_PRIME;
     
     for (let i = 0; i < types.length; i++) {
+      if (types[i].trim().length < 2) continue;
       let data = types[i].split(":");
       let typeStr = data[0].toUpperCase().trim();
       let difficulty = Number(data[1]);
