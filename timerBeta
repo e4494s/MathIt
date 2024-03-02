@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+  <meta charset = "UTF-8">
+  <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+  <title>Math-It ~ Mental Math</title>
+  <link rel = "stylesheet" type = "text/css" href = "css/main.css">
+  <style>
+    #correct-txt {
+      font-weight: bold;
+      font-size: 20px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body onload = "nextQuestion()">
+
+<header>
+  <h1>+&nbsp;&nbsp;&nbsp;Math-It&nbsp;&nbsp;&nbsp;+</h1>
+  <h2><span class = "big">{</span> Math Practice Engine <span class = "big">}</span></h2>
+</header>
+
+<nav>
+  <a href = "index.html">Home</a>
+  <a href = "mental-math.html">Mental Math</a>
+  <a href = "#">Calculus</a>
+  <a href = "#">Linear Algebra</a>
+  <a href = "#">Statistics</a>
+</nav>
+
+<section>
+  <table style = "width: 100%">
+    <tbody>
+      <tr>
+        <td style = "width: 50%">
+          <h2>Question #<span id = "question-num-txt">1</span></h2>
+		  <h2 id = "countdown-text"></h2> <!-- -->
+		  <h2 id = "score-text"></h2> <!-- -->
+          <p id = "question-body-txt"></p>
+          <input type = "text" id = "response" placeholder = "?" AUTOFOCUS>
+          
+          <br><br>
+          
+          <button onclick = "submitQuestion()">Submit</button>
+          
+          <br><br>
+          
+          <div id = "correct-txt"></div>
+        </td>
+        
+        <td>
+          <h3>Skill Report:</h3>
+          
+          <div><b>Correct:</b> <span id = "correct-fraction-txt"></span></div>
+          
+          <br>
+          
+          <div><b>Ratio:</b> <span id = "correct-ratio-txt"></span></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<script>
+  let numTxt = document.getElementById("question-num-txt");
+  let bodyTxt = document.getElementById("question-body-txt");
+  let response = document.getElementById("response");
+  let correctTxt = document.getElementById("correct-txt");
+  let fractionTxt = document.getElementById("correct-fraction-txt");
+  let ratioTxt = document.getElementById("correct-ratio-txt");
+  
+  let countdownTxt = document.getElementById("countdown-text");//
+  let scoreTxt = document.getElementById("score-text");//
+  
+  let questionNum = 0;
+  let currentCorrect = 0;
+  let questionTypes = [
+    {value: 0, weight: 0.5},
+    {value: 1, weight: 0.5},
+    {value: 2, weight: 0.5}
+  ];
+  let expectedAnswer;
+  let correctTimeoutID = -1;
+  let correctTimeoutLength = 0.8;
+  let incorrectTimeoutLength = 1.2;
+  
+  
+  let seconds = 10;//
+  let score = 0;//
+  let scoreTicks = 0;//
+  
+  
+	let secRep = 0//
+	let scoreTickRep = 0//
+
+	countdownTxt.innerHTML = seconds;//
+	scoreTxt.innerHTML = score;//
+	  
+	function printSec(){//
+		seconds -= 1;
+		countdownTxt.innerHTML = seconds;
+			if (seconds == 0){
+				clearInterval(secRep);
+			}
+	}
+	function setScoreTicks(){//
+		scoreTicks -= 0.2;
+	}
+  
+  function questionBasic(type) {
+    let a = Math.round(randBetween(3, 20));
+    let b = Math.round(randBetween(3, type === 2 ? 20 - a : 20));
+    
+    let operator = ["+", "-", "x"][type];
+    
+    let question = "What is " + a + " " + operator + " " + b + "?";
+    let answer;
+    if (type === 0) answer = a + b;
+    else if (type === 1) answer = a - b;
+    else if (type === 2) answer = a * b;
+    
+    return {question: question, answer: answer};
+  }
+  
+  
+  
+  function nextQuestion() {
+	score += Math.max(0, scoreTicks);//
+	scoreTxt.innerHTML = score.toFixed(0);//
+	clearInterval(secRep);//
+	clearInterval(scoreTickRep);//
+	seconds = 10;//
+	countdownTxt.innerHTML = seconds;//
+	scoreTicks = 20;//
+	secRep = setInterval(printSec, 1000);//
+	scoreTickRep = setInterval(setScoreTicks, 100)//
+  
+    response.value = "";
+    correctTxt.innerHTML = ""
+    clearTimeout(correctTimeoutID);
+    
+    let questionType = randWeightedArr(questionTypes);
+    
+    let question = {question: "", answer: -1};
+    
+    if (questionType === 0) question = questionBasic(0);
+    else if (questionType === 1) question = questionBasic(1);
+    else if (questionType === 2) question = questionBasic(2);
+    
+    questionNum++;
+    numTxt.innerHTML = questionNum;
+    
+    bodyTxt.innerHTML = question.question;
+    expectedAnswer = question.answer;
+  }
+  
+  
+  
+  function submitQuestion() {
+    let answerGiven = Number(response.value);
+    
+    if (answerGiven === expectedAnswer) {
+      correctTxt.style.color = "green";
+      correctTxt.innerHTML = "Correct!";
+      
+      currentCorrect++;
+	  
+      
+      correctTimeoutID = setTimeout(nextQuestion, correctTimeoutLength * 1000);
+    }
+    else {
+      correctTxt.style.color = "red";
+      correctTxt.innerHTML = "Incorrect!<br>Answer was " + expectedAnswer;
+      
+	  multiplier = 0;
+      correctTimeoutID = setTimeout(nextQuestion, incorrectTimeoutLength * 1000);
+    }
+	
+	clearInterval(secRep);//
+	clearInterval(scoreTickRep);//
+    
+    fractionTxt.innerHTML = currentCorrect + " / " + questionNum;
+    ratioTxt.innerHTML = ((currentCorrect / questionNum) * 100).toFixed(1) + "%";
+  }
+  
+  
+  
+  function randBetween(min, max) {
+    return (Math.random() * (max - min)) + min;
+  }
+  
+  response.addEventListener("keyup", e => {
+    if (e.keyCode === 13 || e.key === "Enter" || e.code === "Enter") {
+      submitQuestion();
+    }
+  });
+  
+  function randWeightedArr(arr) {
+    let sumWeights = 0;
+    for (let i = 0; i < arr.length; i++) sumWeights += arr[i].weight;
+    
+    let rand = Math.random() * sumWeights;
+    let currSumWeight = 0;
+    for (let i = 0; i < arr.length; i++) {
+      if (currSumWeight + arr[i + 1].weight > currSumWeight) return arr[i].value;
+      
+      currSumWeight += arr[i].weight;
+    }
+    
+    return arr[arr.length - 1].value;
+  }
+</script>
+
+<!--
+TODO:
+
+Remove non-number characters from input
+
+Timer?
+  Multiplier?
+Zen Mode (no timer) / Arcade Mode (timer)
+-->
+
+</body>
+</html>
