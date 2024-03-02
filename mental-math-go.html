@@ -11,6 +11,25 @@
       font-weight: bold;
       font-size: 20px;
       font-style: italic;
+      margin: auto;
+      width: 25em;
+    }
+    
+    #skill-report {
+      padding: 10px;
+      border: 6px double darkgreen;
+      background-color: #b3ffbe;
+      border-radius: 8px;
+      min-width: 200px;
+      margin-right: 25px;
+    }
+    
+    h2, h3 {
+      margin-top: 0;
+    }
+    
+    h3 {
+      text-align: center;
     }
   </style>
 </head>
@@ -20,13 +39,14 @@
 
 <header>
   <h1>+&nbsp;&nbsp;&nbsp;Math-It&nbsp;&nbsp;&nbsp;+</h1>
+  <img src = "images/logo.png" id = "logo">
   <h2><span class = "brace">{</span> Math Practice Engine <span class = "brace">}</span></h2>
 </header>
 
 <nav>
   <a href = "index.html">Home</a>
   <a href = "mental-math.html">Mental Math</a>
-  <a href = "#">Calculus</a>
+  <a href = "calculus.html">Calculus</a>
   <a href = "#">Linear Algebra</a>
   <a href = "#">Statistics</a>
 </nav>
@@ -35,7 +55,10 @@
   <table style = "width: 100%">
     <tbody>
       <tr>
-        <td style = "width: 50%">
+        <td class = "spacer">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style = "width: 100%; text-align: center;">
           <h2>Question #<span id = "question-num-txt">1</span></h2>
           <p id = "question-body-txt"></p>
           <input type = "text" id = "response" placeholder = "?" AUTOFOCUS>
@@ -50,13 +73,19 @@
         </td>
         
         <td>
-          <h3>Skill Report:</h3>
-          
-          <div><b>Correct:</b> <span id = "correct-fraction-txt"></span></div>
-          
-          <br>
-          
-          <div><b>Ratio:</b> <span id = "correct-ratio-txt"></span></div>
+          <div id = "skill-report">
+            <h3>Skill Report</h3>
+            
+            <div><b>Skill Level:</b> <span id = "skill-level-txt"></span></div>
+            
+            <br>
+            
+            <div><b>Correct:</b> <span id = "correct-fraction-txt"></span></div>
+            
+            <br>
+            
+            <div><b>Ratio:</b> <span id = "correct-ratio-txt"></span></div>
+          </div>
         </td>
       </tr>
     </tbody>
@@ -70,6 +99,7 @@
   let correctTxt = document.getElementById("correct-txt");
   let fractionTxt = document.getElementById("correct-fraction-txt");
   let ratioTxt = document.getElementById("correct-ratio-txt");
+  let skillLevelTxt = document.getElementById("skill-level-txt");
   
   const TYPE_SUM = 0;        // What is 7 + 19? / What is 55 - 21?
   const TYPE_PROD = 1;       // What is 9*6?
@@ -87,10 +117,16 @@
   let correctTimeoutID = -1;
   let correctTimeoutLength = 0.8;
   let incorrectTimeoutLength = 1.2;
+  let currQuestion;
+  let skillLevel = 0;
+  let difficultyPowerCorrect = 0.5;
+  let difficultyPowerIncorrect = 0.3;
   
   
   
   function questionSum(difficulty) {
+    difficulty = difficulty ** 2;
+    
     let type = Math.floor(Math.random() * 2);
     
     let a = Math.round(Math.max(2, randBetween(3, 20) * difficulty));
@@ -107,6 +143,8 @@
   }
   
   function questionProd(difficulty) {
+    difficulty = difficulty ** 0.9;
+    
     let a = Math.round(Math.max(2, randBetween(3, 20) * difficulty));
     let b = Math.round(randBetween(3, Math.max(2, (20 * difficulty)) - a));
     
@@ -117,15 +155,17 @@
   }
   
   function questionPrime(difficulty) {
-    let primeLikelihood = Math.max(0.4, Math.min(1, (0.8 / Math.sqrt(difficulty + 0.5)) - 0.3));
+    let primeLikelihood = Math.max(0.4, Math.min(1, (0.8 / (difficulty + 0.5)) - 0.3));
     let willBePrime = Math.random() < primeLikelihood;
+    
+    let scaleFactor = difficulty ** 1.05;
     
     let num;
     
     let randNum = () => {
       let evenLikelihood = Math.max(0, 0.9 - (0.4 * difficulty));
       let parity = Math.random() < evenLikelihood ? 0 : 1;
-      return (2 * Math.round(randBetween(5, Math.max(5, 50 * difficulty)))) + parity;
+      return (2 * Math.round(randBetween(5, Math.max(5, 50 * scaleFactor)))) + parity;
     };
     
     if (willBePrime) {
@@ -148,9 +188,12 @@
   
   
   function questionPower(difficulty) {
-    let difficultyFactor = Math.sqrt(difficulty);
+    let difficultyFactor = difficulty ** 0.45;
+    let bDiffFactor = Math.min(2, (difficulty ** 0.15));
+    
+    
     let a = Math.round(randBetween(2, randBetween(5, 10)) * difficultyFactor);
-    let b = Math.round(randBetween(2, (randBetween(Math.max(2, 9 - a), Math.max(3, 9 - a))) * difficultyFactor));
+    let b = Math.round(randBetween(2, (randBetween(Math.max(2, 9 - a), Math.max(3, 9 - a))) * bDiffFactor));
     
     let question = "\\text{What is}\\ " + a + "^{" + b + "}\\text{?}";
     
@@ -162,6 +205,8 @@
   
   
   function questionReducFrac(difficulty) {
+    difficulty **= 0.6;
+    
     let b = Math.max(2, Math.round(randBetween(randBetween(2, 5), randBetween(9, 15) * difficulty)));
     let a = Math.max(2, Math.round(randBetween(Math.random() < 0.2 ? 1 : 2, randBetween(7, 10)) * difficulty)) * b;
     
@@ -177,6 +222,8 @@
   function questionMod(difficulty) {
     let plusMinus1Likelihood = 1 - (difficulty / 2);
     let minusLikelihood = 1 - (difficulty / 2);
+    
+    difficulty **= 0.7;
     
     // kb (+/-) c mod b = c
     let b = Math.round(Math.max(2, randBetween(2, 10 * difficulty)));
@@ -200,6 +247,7 @@
     clearTimeout(correctTimeoutID);
     
     let chosen = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+    currQuestion = chosen;
     let questionType = chosen.typeNum;
     let questionDifficulty = chosen.difficulty;
     
@@ -237,18 +285,23 @@
       
       currentCorrect++;
       
+      skillLevel += currQuestion.difficulty ** difficultyPowerCorrect;
+      
       correctTimeoutID = setTimeout(nextQuestion, correctTimeoutLength * 1000);
     }
     else {
       correctTxt.style.color = "red";
-      if (currQuestionType != TYPE_PRIME) correctTxt.innerHTML = "Incorrect!<br>Answer was " + expectedAnswer;
-      else correctTxt.innerHTML = "Incorrect!<br>Answer was " + (expectedAnswer ? "prime" : "not prime");
+      if (currQuestionType != TYPE_PRIME) correctTxt.innerHTML = "Incorrect!<br>Answer: " + expectedAnswer;
+      else correctTxt.innerHTML = "Incorrect!<br>Answer: " + (expectedAnswer ? "Prime" : "Not prime");
+      
+      skillLevel -= currQuestion.difficulty ** difficultyPowerIncorrect;
       
       correctTimeoutID = setTimeout(nextQuestion, incorrectTimeoutLength * 1000);
     }
     
     fractionTxt.innerHTML = currentCorrect + " / " + questionNum;
     ratioTxt.innerHTML = ((currentCorrect / questionNum) * 100).toFixed(1) + "%";
+    skillLevelTxt.innerHTML = Math.round(skillLevel * 10);
   }
   
   
