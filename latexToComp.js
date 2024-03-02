@@ -34,5 +34,3 @@ function conv(inp){
     }
     return converted;
 }
-
-console.log(conv("\\frac{1}{2}x^2+3x+5"))
