@@ -8,7 +8,7 @@ function displayLatex() {
 function makeQuestionIntegral() {
     document.getElementById('inCorrect').innerText = '';
     document.getElementById('wrongAnswerExplanation').innerText = '';
-    der = 1;//Math.floor(Math.random() * 2) + 1;
+    der = Math.floor(Math.random() * 3) + 1;
     if (der === 1) {
         n = Math.floor(Math.random() * 20) + 2;
         m = n - 1;
@@ -24,7 +24,52 @@ function makeQuestionIntegral() {
         derInt = nerdamer(`integrate(${questionFunction}, x)`).toString();
         derInt += '+C';
         questionFunctionLatex = `x^{${p}/${q}}+${a}x^{${n}}+${b}x^{${m}}+${c}`;
-        console.log(derInt);
+        // console.log(derInt);
+    }
+    else if (der === 2) {
+        t = Math.floor(Math.random() * 6) + 1;
+        if (t === 1) {
+            questionFunction = 'sin(x)';
+            derInt = nerdamer(`integrate(${questionFunction}, x)`).toString();
+            derInt += '+C';
+            questionFunctionLatex = `\\sin(x)`;
+        }
+        else if (t === 2) {
+            questionFunction = 'cos(x)';
+            derInt = nerdamer(`integrate(${questionFunction}, x)`).toString();
+            derInt += '+C';
+            questionFunctionLatex = `\\cos(x)`;
+        }
+        else if (t === 3) {
+            questionFunction = 'tan(x)';
+            derInt = nerdamer(`integrate(${questionFunction}, x)`).toString();
+            derInt += '+C';
+            questionFunctionLatex = `\\tan(x)`;
+        }
+        else if (t === 4) {
+            questionFunction = 'sec(x)';
+            derInt = nerdamer(`integrate(${questionFunction}, x)`).toString();
+            derInt += '+C';
+            questionFunctionLatex = `\\sec(x)`;
+        }
+        else if (t === 5) {
+            questionFunction = 'csc(x)';
+            derInt = nerdamer(`integrate(${questionFunction}, x)`).toString();
+            derInt += '+C';
+            questionFunctionLatex = `\\csc(x)`;
+        }
+        else if (t === 6) {
+            questionFunction = 'cot(x)';
+            derInt = nerdamer(`integrate(${questionFunction}, x)`).toString();
+            derInt += '+C';
+            questionFunctionLatex = `\\cot(x)`;
+        }
+    }
+    else if (der === 3) {
+        questionFunction = 'log(x)';
+        derInt = nerdamer(`integrate(${questionFunction}, x)`).toString();
+        derInt += '+C';
+        questionFunctionLatex = `\\ln(x)`;
     }
 
     document.getElementById('question1').innerText = `What is the integral of \\(${questionFunctionLatex}\\)?`;
@@ -45,6 +90,51 @@ function checkAnswerIntegral() {
                                                                         \\(= \\frac{x^{${p+q}/${q}}}{${p+q}/${q}}+${a}\\left(\\frac{x^{${n+1}}}{${n+1}}\\right)+${b}\\left(\\frac{x^{${m+1}}}{${m+1}}\\right)+${c}\\left(\\frac{x^{1}}{1}\\right)+C\\)\n
                                                                         \\(= \\frac{${q}}{${p+q}}x^{${p+q}/${q}}+\\frac{${a}}{${n+1}}x^{${n+1}}+\\frac{${b}}{${m+1}}x^{${m+1}}+${c}x+C\\)\n
                                                                     So, \\(\\int ${questionFunctionLatex} dx = \\frac{${q}}{${p+q}}x^{${p+q}/${q}}+\\frac{${a}}{${n+1}}x^{${n+1}}+\\frac{${b}}{${m+1}}x^{${m+1}}+${c}x+C\\)\n`; 
+    }
+    else if (der === 2) {
+        if (t === 1) {
+            document.getElementById('wrongAnswerExplanation').innerText = `The integral of the function \\(f(x) = \\sin(x)\\) is \\(F(x) = -\\cos(x)+C\\)`;
+        }
+        else if (t === 2) {
+            document.getElementById('wrongAnswerExplanation').innerText = `The integral of the function \\(f(x) = \\cos(x)\\) is \\(F(x) = \\sin(x)+C\\)`;
+        }
+        else if (t === 3) {
+            document.getElementById('wrongAnswerExplanation').innerText = `U-substitution is used for this integral.\n
+                                                                        Rewrite the integral as \\(\\int \\frac{\\sin(x)}{\\cos(x)} dx\\)\n
+                                                                        Let \\(u = \\cos(x)\\) and \\(du = -\\sin(x) dx\\)\n
+                                                                        Then, \\(\\int \\frac{\\sin(x)}{\\cos(x)} dx = \\int \\frac{\\sin(x)}{u}\\cdot\\frac{du}{-\\sin(x)}\\)\n
+                                                                        \\(= -\\int \\frac{1}{u} du\\)\n
+                                                                        \\(= -\\ln|u|+C\\)\n
+                                                                        \\(= -\\ln|\\cos(x)|+C\\)\n
+                                                                    So, \\(\\int \\tan(x) dx = -\\ln|\\cos(x)|+C\\)`;
+        }
+        else if (t === 4) {
+            document.getElementById('wrongAnswerExplanation').innerText = `The integral of the function \\(f(x) = \\sec(x)\\) is \\(F(x) = \\ln|\\sec(x)+\\tan(x)|+C\\)`;
+        }
+        else if (t === 5) {
+            document.getElementById('wrongAnswerExplanation').innerText = `The integral of the function \\(f(x) = \\csc(x)\\) is \\(F(x) = -\\ln|\\csc(x)+\\cot(x)|+C\\)`;
+        }
+        else if (t === 6) {
+            document.getElementById('wrongAnswerExplanation').innerText = `U-substitution is used for this integral.\n
+                                                                        Rewrite the integral as \\(\\int \\frac{\\cos(x)}{\\sin(x)} dx\\)\n
+                                                                        Let \\(u = \\sin(x)\\) and \\(du = \\cos(x) dx\\)\n
+                                                                        Then, \\(\\int \\frac{\\cos(x)}{\\sin(x)} dx = \\int \\frac{\\sin(x)}{u}\\cdot\\frac{du}{\\sin(x)}\\)\n
+                                                                        \\(= \\int \\frac{1}{u} du\\)\n
+                                                                        \\(= \\ln|u|+C\\)\n
+                                                                        \\(= \\ln|\\sin(x)|+C\\)\n
+                                                                    So, \\(\\int \\cot(x) dx = \\ln|\\sin(x)|+C\\)`;
+        }
+    }
+    else if (der === 3) {
+        document.getElementById('wrongAnswerExplanation').innerText = `Integration by parts is use for this integral. The formula for integration by parts is: \n
+                                                                        \\(\\int u dv = uv - \\int v du\\)\n
+                                                                        \\(\\int \\ln(x) dx\\)\n
+                                                                        Let \\(u = \\ln(x)\\) and \\(dv = dx\\)\n
+                                                                        Then, \\(du = \\frac{1}{x} dx\\) and \\(v = x\\)\n
+                                                                        \\(\\int \\ln(x) dx = x\\ln(x) - \\int x\\frac{1}{x} dx\\)\n
+                                                                        \\(= x\\ln(x) - \\int dx\\)\n
+                                                                        \\(= x\\ln(x) - x + C\\)\n
+                                                                    So, \\(\\int \\ln(x) dx = x\\ln(x) - x + C\\)\n`;
     }
 
     MathJax.typeset();
