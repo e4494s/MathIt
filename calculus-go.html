@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+  <meta charset = "UTF-8">
+  <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+  <title>Math-It ~ Calculus</title>
+  <link rel = "stylesheet" type = "text/css" href = "css/main.css">
+  <link rel = "icon" href = "images/favicon.png" type = "image/png">
+  <style>
+    #correct-txt {
+      font-weight: bold;
+      font-size: 20px;
+      font-style: italic;
+      margin: auto;
+      width: 25em;
+    }
+    
+    #skill-report {
+      padding: 10px;
+      border: 6px double darkgreen;
+      background-color: #b3ffbe;
+      border-radius: 8px;
+      min-width: 200px;
+      margin-right: 25px;
+    }
+    
+    h2, h3 {
+      margin-top: 0;
+    }
+    
+    h3 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body onload = "init()">
+
+<link rel = "stylesheet" type = "text/css" href = "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.css">
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js""></script>
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://nerdamer.com/js/nerdamer.core.js" defer></script>
+<script src="https://nerdamer.com/js/Calculus.js" defer></script>
+
+<header>
+  <h1>+&nbsp;&nbsp;&nbsp;Math-It&nbsp;&nbsp;&nbsp;+</h1>
+  <img src = "images/logo.png" id = "logo">
+  <h2><span class = "brace">{</span> Math Practice Engine <span class = "brace">}</span></h2>
+</header>
+
+<nav>
+  <a href = "index.html">Home</a>
+  <a href = "mental-math.html">Mental Math</a>
+  <a href = "calculus.html">Calculus</a>
+  <a href = "#">Linear Algebra</a>
+  <a href = "#">Statistics</a>
+</nav>
+
+<section>
+  <h1 class = "go-title">Calculus Practice</h1>
+  <br>
+  <table style = "width: 100%">
+    <tbody>
+      <tr>
+        <td class = "spacer">&nbsp;</td>
+      </tr>
+      <tr>
+        <td style = "width: 100%; text-align: center;">
+          <h2>Question #<span id = "question-num-txt">1</span></h2>
+          <p id = "question-body-txt"></p>
+          
+          <span id = "math-field"></span>
+          
+          <br><br>
+          
+          <button onclick = "submitQuestion()" id = "submit-btn">Submit</button>
+          
+          <br><br>
+          
+          <div id = "correct-txt">&nbsp;</div>
+          
+          <br><br>
+          
+          <div id = "wrongAnswerExplanation"></div>
+        </td>
+        
+        <td>
+          <div id = "skill-report">
+            <h3>Skill Report</h3>
+            
+            <div><b>Skill Level:</b> <span id = "skill-level-txt"></span></div>
+            
+            <br>
+            
+            <div><b>Correct:</b> <span id = "correct-fraction-txt"></span></div>
+            
+            <br>
+            
+            <div><b>Ratio:</b> <span id = "correct-ratio-txt"></span></div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<script src = "calc-questions.js"></script>
+<script src = "latexToComp.js"></script>
+
+<script>
+  let numTxt = document.getElementById("question-num-txt");
+  let bodyTxt = document.getElementById("question-body-txt");
+  let response = document.getElementById("response");
+  let correctTxt = document.getElementById("correct-txt");
+  let fractionTxt = document.getElementById("correct-fraction-txt");
+  let ratioTxt = document.getElementById("correct-ratio-txt");
+  let skillLevelTxt = document.getElementById("skill-level-txt");
+  
+  const TYPE_POWER = 0;
+  const TYPE_PRODUCT = 1;
+  const TYPE_QUOTIENT = 3;
+  const TYPE_CHAIN = 4;
+  const TYPE_TRIG = 5;
+  const TYPE_INT = 6;
+  
+  let questionNum = 0;
+  let currentCorrect = 0;
+  
+  let alreadyTried = false;
+  
+  let questionTypes = [];
+  let expectedAnswer;
+  let currQuestionType = -1;
+  let currQuestion;
+  let skillLevel = 0;
+  let difficultyPowerCorrect = 0.5;
+  let difficultyPowerIncorrect = 0.3;
+  let integralsOn = false;
+  let doIntegral = false;
+  
+  
+  let mathFieldSpan = document.getElementById("math-field");
+  var MQ = MathQuill.getInterface(2);
+  var mathField = MQ.MathField(mathFieldSpan, {
+    spaceBehavesLikeTab: true, // configurable
+    autoCommands: "pi sqrt",
+    autoOperatorNames: "sin cos tan cot csc sec ln",
+    charsThatBreakOutOfSupSub: "+-=<>",
+    maxDepth: 10
+  });
+  
+  
+  
+  function nextQuestion() {
+    //mathFieldSpan.innerText = "";
+    correctTxt.innerHTML = "&nbsp;";
+    
+    doIntegral = false;
+    if (integralsOn) doIntegral = Math.random() < 0.5;
+    
+    if (doIntegral) currQuestion = makeQuestionIntegral();
+    else currQuestion = makeQuestionDerivative();
+    
+    questionNum++;
+    numTxt.innerHTML = questionNum;
+    
+    bodyTxt.innerText = currQuestion;
+    MathJax.typeset();
+  }
+  
+  
+  
+  function submitQuestion() {
+    if (!alreadyTried) {
+      let answerGiven = conv(mathField.latex());
+      
+      if (doIntegral) checkAnswerIntegral(answerGiven);
+      else checkAnswerDerivative(answerGiven);
+      
+      fractionTxt.innerHTML = currentCorrect + " / " + questionNum;
+      ratioTxt.innerHTML = ((currentCorrect / questionNum) * 100).toFixed(1) + "%";
+      skillLevelTxt.innerHTML = Math.round(skillLevel * 10);
+      
+      document.getElementById("submit-btn").innerHTML = "Next";
+      alreadyTried = true;
+    }
+    else {
+      document.getElementById("submit-btn").innerHTML = "Submit";
+      alreadyTried = false;
+      nextQuestion();
+    }
+  }
+  
+  
+  
+  function randBetween(min, max) {
+    return (Math.random() * (max - min)) + min;
+  }
+  
+  window.addEventListener("keyup", e => {
+    if (e.keyCode === 13 || e.key === "Enter" || e.code === "Enter") {
+      submitQuestion();
+    }
+  });
+  
+  function evalBool(str) {
+    let first = str[0].toLowerCase();
+    
+    if (first === "y" || first === "p") return true;
+    else return false;
+  }
+  
+  
+  
+  function init() {
+    if (location.search.trim().length < 5) {
+      location.search = "?";
+    }
+    
+    if (location.search.toUpperCase().includes("INT")) integralsOn = true;
+    
+    let types = location.search.substr(1).split(",");
+    
+    questionTypes = [];
+    
+    let typeStrings = [];
+    typeStrings["POWER"] = TYPE_POWER;
+    typeStrings["PRODUCT"] = TYPE_PRODUCT;
+    typeStrings["QUOTIENT"] = TYPE_QUOTIENT;
+    typeStrings["CHAIN"] = TYPE_CHAIN;
+    typeStrings["TRIG"] = TYPE_TRIG;
+    
+    for (let i = 0; i < types.length; i++) {
+      if (types[i].trim().length < 2) continue;
+      let data = types[i];
+      let typeStr = data.toUpperCase().trim();
+      
+      if (typeStr === "INT") continue;
+      
+      questionTypes.push(typeStrings[typeStr]);
+    }
+    
+    nextQuestion();
+  }
+</script>
+
+</body>
+</html>
