@@ -1,0 +1,136 @@
+body {
+  font-family: Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+
+
+header {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+header h1 {
+  margin: 5px;
+  font-size: 45px;
+  color: black;
+}
+header h2 {
+  margin: 5px;
+  font-size: 25px;
+  font-family: "Courier New", monospace;
+}
+
+
+
+nav {
+  background-color: #f8f9fa;
+  padding: 0;
+  text-align: center;
+}
+nav a {
+  display: inline-block;
+  color: #333;
+  text-decoration: none;
+  margin: -4px 15px 0 15px;
+  transition: color 0.3s ease;
+  background: linear-gradient(to top, #aadaac, #aadaac, #4caf50, #4caf50);
+  padding: 5px 7px 5px 7px;
+  border-radius: 0 0 12px 12px;
+  font-weight: bold;
+}
+nav a:hover {
+  color: black;
+}
+
+
+
+section {
+  padding: 20px;
+}
+
+
+
+footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  margin: 0;
+  width: 100%;
+}
+
+
+
+.main {
+  min-height: 100vh;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+
+
+.big {
+  font-size: 45px;
+}
+
+
+
+a.btn, button {
+  color: #333;
+  text-decoration: none;
+  background: linear-gradient(to top, #aadaac, #aadaac, #4caf50, #4caf50);
+  padding: 6px 28px 6px 28px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+a.btn:hover, button:hover {
+  background: linear-gradient(to bottom, #aadaac, #aadaac, #4caf50, #4caf50);
+}
+a.btn:active, button:active {
+  background: linear-gradient(to bottom, #75c278, #75c278, #357937, #357937);
+  color: black;
+  border: 2px solid black;
+}
+
+
+
+div.center {
+  text-align: center;
+}
+
+
+
+section h3 {
+  font-weight: normal;
+  font-style: italic;
+  text-decoration: underline;
+}
+
+
+
+input[type = text] {
+  font-family: Verdana, sans-serif;
+  border: 1px solid black;
+  border-radius: 0;
+  padding: 3px;
+  margin: 5px;
+  resize: none;
+}
+input[type = text]:focus {
+  outline: 2px solid #255527;
+}
+
+
+
+tr {
+  vertical-align: top;
+}
